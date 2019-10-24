@@ -198,13 +198,17 @@
       });
       $(window).resize(function(){
         $("#xpStatBar").css("width",$("#xpStat").css("width"));
-        setXp(totalXp);
+        setXp(totalXp,false);
       });
 
-      function setXp(value){
+      function setXp(value, animate=true){
         totalXp = value;
         percent = parseFloat($("#xpStat").css("width").slice(0,-2)) / 100 * value;
-        $("#xpStatProgress").animate({width:String(percent)+"px"},800);
+        
+        if(animate)
+          $("#xpStatProgress").animate({width:String(percent)+"px"},800);
+        else
+        $("#xpStatProgress").css("width",String(percent)+"px");        
 
         $("#xpStat").html("Experience: "+value.toFixed(1)+"%");
         $("#xpStatBar").html("Experience: "+value.toFixed(1)+"%");
