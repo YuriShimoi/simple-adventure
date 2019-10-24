@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Adventure</title>
+    
+    <!-- BOOTSTRAP -->
+    <link rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous">
+
+    <style>
+      :root{
+        --light-blue: #cae8f1;
+        --medium-blue: #8ac3d6;
+        --dark-blue: #4c8294;
+      }
+
+      #top{
+        background-color: #111111;
+        position: absolute;
+        color: white;
+        height: 30px;
+        width: 100%;
+      }
+
+      #bottom{
+        background-color: #111111;
+        position: absolute;
+        color: white;
+        height: 30px;
+        width: 100%;
+        bottom: 0;
+      }
+
+      #main{
+        background-color: var(--dark-blue);
+        padding: 40px 10px 40px 10px;
+        height: 100vh;
+        color: var(--medium-blue);
+        margin: 0;
+      }
+
+      #gmTitle{
+        animation-name: shake;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+        text-align: center;
+        margin: 20px;
+        color: white;
+      }
+
+      @keyframes shake{
+        0%{
+          transform: rotateZ(-5deg) scale(1.0,1.0);
+        }
+        50%{
+          transform: rotateZ(5deg) scale(1.2,1.2);
+        }
+        100%{
+          transform: rotateZ(-5deg) scale(1.0,1.0);
+        }
+      }
+
+      #profile{
+        background-color: #00000033;
+        border-radius: 8px;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      #profile h3{
+        text-align:center;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      #gmTitle span{
+        color: var(--light-blue);
+      }
+
+      #stats{
+        border-bottom: 1px solid var(--medium-blue);
+        border-top: 1px solid var(--medium-blue);
+        padding-top: 2px;
+        height: 175px;
+      }
+
+      #stats span{
+        color: white;
+      }
+
+      #stats #xpStat{
+        width: 100%;
+        display: inline-block;
+        background-color: var(--dark-blue);
+        border: 2px solid #00000066;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      #stats #xpStatProgress{
+        display: inline-block;
+        margin-top: -28px;
+        position: absolute;
+        overflow: hidden;
+        width: 0;
+      }
+
+      #stats #xpStatBar{
+        display: inline-block;
+        background-color: white;
+        border: 2px solid #00000066;
+        text-align: center;
+        color: var(--dark-blue);
+        font-weight: bold;
+      }
+
+      #gamemap{
+        background-color: #00000033;
+        border-radius: 8px;
+        height: 100%;
+        padding: 10px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="top"></div>
+
+    <div id="main" class="row">
+      <div id="profile" class="col-3">
+        <h2 id="gmTitle">Simple <span contenteditable="true">Hero<br></span> Adventure</h2>
+        <div id="stats">
+          <h3>Profile</h3>
+          <label>class: </label>
+          <span id="clStat">-</span>
+          <br>
+          <div style="display: inline-block; float: left; width: 50%;">
+            <label>Life: </label>
+            <span id="lfStat">-</span>
+            <br>
+            <label>Defence: </label>
+            <span id="stStat">-</span>
+          </div>
+          <div style="display: inline-block; float: left; width: 50%;">
+            <label>Strength: </label>
+            <span id="dfStat">-</span>
+            <br>
+            <label>Agility: </label>
+            <span id="agStat">-</span>
+          </div>
+          <span id="xpStat">Experience: 0.0%</span>
+          <span id="xpStatProgress">
+            <span id="xpStatBar">Experience: 0.0%</span>
+          </span>
+        </div>
+        <div id="inventory">
+          <div>
+            <h3>Inventory</h3>
+            <span>espada</span>
+            <br>
+            <span>pipoca</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-9" style="padding: 0 0 0 10px">
+        <div id="gamemap">
+          a
+        </div>
+      </div>
+    </div>
+
+    <div id="bottom"></div>
+
+
+
+    <!-- Jquery Slim -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+      crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"></script>
+  
+  
+    <script>
+      var totalXp = 0;
+
+      $(document).ready(function(){
+        $("#xpStatBar").css("width",$("#xpStat").css("width"));
+        setXp(totalXp);
+      });
+      $(window).resize(function(){
+        $("#xpStatBar").css("width",$("#xpStat").css("width"));
+        setXp(totalXp);
+      });
+
+      function setXp(value){
+        totalXp = value;
+        percent = parseFloat($("#xpStat").css("width").slice(0,-2)) / 100 * value;
+        $("#xpStatProgress").animate({width:String(percent)+"px"},800);
+
+        $("#xpStat").html("Experience: "+value.toFixed(1)+"%");
+        $("#xpStatBar").html("Experience: "+value.toFixed(1)+"%");
+
+        if(value == 100){
+          $("#xpStatBar").css("cursor","pointer");
+        }
+      }
+
+      function addXp(value){
+        totalXp += value;
+        if(totalXp > 100)
+          totalXp = 100;
+
+        setXp(totalXp);
+      }
+    </script>
+
+
+    <script>
+      function matrix(element, interval, color="white", times=undefined, length=undefined){
+        function makeMatrix(element,color){
+          var html = $(element).html();
+          var text;
+          var result;
+          
+          // find matrix position
+          if(!(html.split("<matrix style=\"color:").length > 1)){
+            text = ["",html];
+          }
+          else{
+            text = [html.split("<matrix style=\"color:")[0], html.split("\">")[1]];
+            text = (text[0]+text[1]).split("</matrix>");
+            if(text[1] == ""){
+              text = ["",text[0]]; // ["t1+t2",""] > ["","t1+t2"]
+            }
+          }
+          // console.log(text);
+          result = text[0]
+                  + "<matrix style=\"color:"+color+"\">"
+                    + text[1][0]
+                  + "</matrix>"+ text[1].slice(1);
+
+          $(element).html(result);
+        }
+
+        function clearMatrix(element,color){
+          var html = $(element).html();
+          var text;
+          var result;
+          
+          // find matrix position
+          text = [html.split("<matrix style=\"color:")[0], html.split("\">")[1]];
+          text = (text[0]+text[1]).split("</matrix>");
+          result = text[0] + text[1];
+
+          $(element).html(result);
+        }
+
+        // find text size
+        if(length == undefined){
+          var html = $(element).html();
+          var textLength = html.length;
+          if(html.split("<matrix style=\"color:").length > 1){
+            var text = [html.split("<matrix style=\"color:")[0], html.split("\">")[1]];
+            text = (text[0]+text[1]).split("</matrix>");
+            textLength = text[0].length + text[1].length;
+          }
+          if(times)
+            times *= textLength;
+        }
+        else
+          times *= length;
+
+        if(times > 0){
+          makeMatrix(element, color);
+          setTimeout(function(){matrix(element,interval,color,times-1,length=1)},interval)
+        }
+        else if(times == 0){
+          clearMatrix(element,color);
+        }
+        if(times == undefined){
+          makeMatrix(element, color);
+          setInterval(function(){makeMatrix(element,color)},interval)
+        }
+      }
+    </script>
+  </body>
+</html>
