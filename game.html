@@ -16,6 +16,10 @@
         --dark-blue: #4c8294;
       }
 
+      .row{
+        margin: 0;
+      }
+
       #top{
         background-color: #111111;
         position: absolute;
@@ -38,7 +42,6 @@
         padding: 40px 10px 40px 10px;
         height: 100vh;
         color: var(--medium-blue);
-        margin: 0;
       }
 
       #gmTitle{
@@ -116,10 +119,46 @@
       }
 
       #gamemap{
-        background-color: #00000033;
         border-radius: 8px;
         height: 100%;
-        padding: 10px;
+      }
+
+      #map_panel{
+        background-color: #00000033;
+        float: left;
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+      }
+
+      #battle_panel{
+        background-color: #00000066;
+        position: absolute;
+        float: left;
+        right: 0;
+        width: 0;
+        height: 100%;
+        border-radius: 0 8px 8px 0;
+        overflow: hidden;
+      }
+
+      #training_panel{
+        background-color: #00000066;
+        position: absolute;
+        float: left;
+        left: 0;
+        margin-left: 10px;
+        width: 100%;
+        height: 0;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .training_type_button{
+        background-color: #00000033;
+        border-radius: 10px;
+        height: 200px;
+        margin: 10px;
       }
 
     </style>
@@ -164,9 +203,34 @@
         </div>
       </div>
       
-      <div class="col-9" style="padding: 0 0 0 10px">
+      <div class="col-9" style="padding: 0 0 0 10px; overflow: hidden">
         <div id="gamemap">
-          a
+          <div id="map_panel">
+            <p onclick="openBattle()">open battle</p>
+            <p onclick="openTraining()">open training</p>
+
+          </div>
+          <div id="battle_panel">
+            <p onclick="closeBattle()">close battle</p>
+
+          </div>
+          <div id="training_panel">
+            <div class="row">
+              <p onclick="closeTraining()" class="col-12" style="background-color: #00000066;">close training</p>
+              <div class="col-6" style="padding:0">
+                <div class="training_type_button">t1</div>
+              </div>
+              <div class="col-6" style="padding:0">
+                <div class="training_type_button">t2</div>
+              </div>
+              <div class="col-6" style="padding:0">
+                <div class="training_type_button">t3</div>
+              </div>
+              <div class="col-6" style="padding:0">
+                <div class="training_type_button">t4</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -195,10 +259,14 @@
       $(document).ready(function(){
         $("#xpStatBar").css("width",$("#xpStat").css("width"));
         setXp(totalXp);
+
+        $("#training_panel").css("width",$("#gamemap").css("width"));
       });
       $(window).resize(function(){
         $("#xpStatBar").css("width",$("#xpStat").css("width"));
         setXp(totalXp,false);
+
+        $("#training_panel").css("width",$("#gamemap").css("width"));
       });
 
       function setXp(value, animate=true){
@@ -224,6 +292,36 @@
           totalXp = 100;
 
         setXp(totalXp);
+      }
+    </script>
+
+
+    <script>
+      function openBattle(){
+        $("#battle_panel").animate({
+          "width":"400px"
+        },300);
+      }
+      
+      function closeBattle(){
+        $("#battle_panel").animate({
+          "width":"0"
+        },300);
+      }
+    </script>
+
+
+    <script>
+      function openTraining(){
+        $("#training_panel").animate({
+          "height":"100%"
+        },300);
+      }
+      
+      function closeTraining(){
+        $("#training_panel").animate({
+          "height":"0"
+        },300);
       }
     </script>
 
